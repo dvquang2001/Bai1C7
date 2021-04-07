@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,23 +63,29 @@ public class MainActivity extends AppCompatActivity {
             super.onProgressUpdate(values);
             double value = values[0];
             double width = values[1];
+            double total = values[2];
             Button btn = new Button(MainActivity.this);
             btn.setText(value+"");
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int width1 = displayMetrics.widthPixels;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT * width,
+                    (int) (width1*width/total),
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             btn.setLayoutParams(layoutParams);
             llButton.addView(btn);
+
         }
 
         @Override
         protected Void doInBackground(Integer... integers) {
             int n = integers[0];
-            for(int i=1;i<n;i++)
+            for(int i=1;i<=n;i++)
             {
                 double value = random.nextInt(100);
-                double width = i/n;
-                publishProgress(value,width);
+                double width = i;
+                double total = n;
+                publishProgress(value,width,total);
                 SystemClock.sleep(100);
             }
             return null;
